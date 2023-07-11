@@ -83,9 +83,9 @@ runs:
       shell: bash
       working-directory: ${{ inputs.source }}
       run: |
-        nyc report -t ${{ github.workspace }}/coverage --reporter text --reporter json --reporter json-summary ${{ steps.configure-reporters.outputs.reporters }} --report-dir ${{ inputs.output-folder }} | tee ${{ inputs.output-folder }}/coverage-final.txt
+        nyc report -t ${{ github.workspace }}/coverage --reporter text --reporter json --reporter json-summary ${{ steps.configure-reporters.outputs.reporters }} --report-dir ${{ inputs.output-folder }}
         
-        report=$(cat ${{ inputs.output-folder }}/coverage-final.txt)
+        report=$(cat ${{ inputs.output-folder }}/coverage-final.json)
         report="${report//'%'/'%25'}"
         report="${report//$'\n'/'%0A'}"
         report="${report//$'\r'/'%0D'}"
