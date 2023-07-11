@@ -1,6 +1,6 @@
-name: 'Merge coverage reports'
-author: 'selfagency'
-description: 'Merge Istanbul coverage reports'
+name: 'Merge Istanbul coverage reports'
+author: 'aleccool213'
+description: 'Merge Istanbul coverage reports from multiple jobs into one.'
 branding:
   icon: 'git-merge'
   color: 'green'
