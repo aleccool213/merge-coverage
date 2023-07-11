@@ -80,16 +80,3 @@ runs:
       working-directory: ${{ inputs.source }}
       run: |
         nyc report -t ${{ github.workspace }}/coverage --reporter text --reporter json --reporter json-summary ${{ steps.configure-reporters.outputs.reporters }} --report-dir ${{ inputs.output-folder }}
-        
-        report=$(cat ${{ inputs.output-folder }}/coverage-final.json)
-        report="${report//'%'/'%25'}"
-        report="${report//$'\n'/'%0A'}"
-        report="${report//$'\r'/'%0D'}"
-        echo -e "::set-output name=report::${report}"
-        echo -e "::notice::Code Coverage Report%0A%0A${report}"
-        
-        json=$(cat ${{ inputs.output-folder }}/coverage-summary.json)
-        json="${json//'%'/'%25'}"
-        json="${json//$'\n'/'%0A'}"
-        json="${json//$'\r'/'%0D'}"
-        echo -e "::set-output name=json::${json}"
