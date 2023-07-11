@@ -14,9 +14,6 @@ inputs:
   output-folder:
     description: 'Where to output merged reports'
     required: true
-  formats:
-    description: 'Comma-separated list of formats to output'
-    required: false
 outputs:
   report:
     description: 'Coverage report'
@@ -30,22 +27,7 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: 16
-
-    - name: Configure reporters
-      id: configure-reporters
-      uses: actions/github-script@v6
-      if: ${{ !steps.merge-coverage.outputs.skip }}
-      with:
-        script: |
-          const reporters = '${{ inputs.formats }}'.split(',');
-          if (reporters.length) {
-            let reporterConfig = '';
-            reporters.forEach(reporter => {
-              reporterConfig += `--reporter ${reporter} `;
-            });
-            core.setOutput('reporters', reporterConfig);
-          }
+        node-version: 20
 
     - name: Install dependencies
       shell: bash
@@ -79,4 +61,4 @@ runs:
       shell: bash
       working-directory: ${{ inputs.source }}
       run: |
-        nyc report -t ${{ github.workspace }}/coverage --reporter text --reporter json --reporter json-summary ${{ steps.configure-reporters.outputs.reporters }} --report-dir ${{ inputs.output-folder }}
+        nyc report -t ${{ github.workspace }}/coverage --reporter text --reporter json --reporter json-summary --report-dir ${{ inputs.output-folder }}

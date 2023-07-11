@@ -7,8 +7,6 @@ GitHub Action to merge coverage reports from parallelized test runners into a si
 - `source`*: Path to source code (usually `${{ github.workspace }}`)
 - `coverage-reports`*: Path to coverage reports (usually `${{ github.workspace }}/coverage`)
 - `output-folder`*: Where to output merged reports
-- `formats`: Comma-separated list of formats to output (`text`, `json`, and `json-summary` are always included)
-  - Options include `cobertura`, `clover`, `lcov`, `teamcity`, `text-loc`
 
 *Required field
 
@@ -27,5 +25,4 @@ GitHub Action to merge coverage reports from parallelized test runners into a si
       source: ${{ github.workspace }}/${{ inputs.package }}
       coverage-reports: ${{ github.workspace }}/${{ inputs.package }}/coverage
       output-folder: ${{ github.workspace }}/${{ inputs.package }}/coverage-reports
-      formats: html
 ```
