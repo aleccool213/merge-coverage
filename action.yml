@@ -17,10 +17,6 @@ inputs:
   formats:
     description: 'Comma-separated list of formats to output'
     required: false
-  artifacts:
-    description: 'Whether to create artifacts'
-    required: false
-    default: 'true'
 outputs:
   report:
     description: 'Coverage report'
@@ -97,11 +93,3 @@ runs:
         json="${json//$'\n'/'%0A'}"
         json="${json//$'\r'/'%0D'}"
         echo -e "::set-output name=json::${json}"
-
-    - name: Upload coverage reports
-      uses: actions/upload-artifact@v3
-      if: ${{ inputs.artifacts == 'true' }}
-      with:
-        name: coverage-reports
-        path: |
-          ${{ inputs.output-folder }}

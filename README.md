@@ -9,7 +9,6 @@ GitHub Action to merge coverage reports from parallelized test runners into a si
 - `output-folder`*: Where to output merged reports
 - `formats`: Comma-separated list of formats to output (`text`, `json`, and `json-summary` are always included)
   - Options include `cobertura`, `clover`, `lcov`, `teamcity`, `text-loc`
-- `artifacts`: Whether to upload the merged reports as artifacts (`true`/`false`), defaults to `true`
 
 *Required field
 
@@ -29,5 +28,4 @@ GitHub Action to merge coverage reports from parallelized test runners into a si
       coverage-reports: ${{ github.workspace }}/${{ inputs.package }}/coverage
       output-folder: ${{ github.workspace }}/${{ inputs.package }}/coverage-reports
       formats: html
-      artifacts: false
 ```
