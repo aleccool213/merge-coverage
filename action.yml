@@ -105,4 +105,3 @@ runs:
         name: coverage-reports
         path: |
           ${{ inputs.output-folder }}
-          ${{ github.workspace }}/coverage
