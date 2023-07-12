@@ -8,14 +8,17 @@ inputs:
   source:
     description: 'Path to source code'
     required: true
-  coverage-reports:
-    description: 'Path to coverage reports'
+  unmerged-coverage-reports-artifact-name:
+    description: 'Name of the coverage reports artifact'
     required: true
   output-folder:
     description: 'Where to output merged reports'
     required: true
   code-coverage-workspace-generates:
     description: 'The workspace directory of the job which generates the coverage reports'
+    required: true
+  merged-code-coverage-artifact-name:
+    description: 'Name of the merged coverage reports artifact'
     required: true
 outputs:
   report:
@@ -36,6 +39,14 @@ runs:
       shell: bash
       if: ${{ steps.cache.outputs.cache-hit != 'true' }}
       run: npm i -g nyc@15.0.1
+    
+    # This downloads all of the code coverage reports which will be processed.
+    # They are expected to be uniquely named and have paths pointing to the
+    # current workspace.
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.unmerged-coverage-reports-artifact-name }}
+        path: unmerged-code-coverage-data
 
     - name: Collect coverage reports
       uses: actions/github-script@v6
@@ -43,16 +54,16 @@ runs:
         script: |
           const {readdir, writeFile, copyFile, mkdir} = require('fs').promises;
           await mkdir(`${{ github.workspace }}/coverage`);
-          const reports = await readdir('${{ inputs.coverage-reports }}', { withFileTypes: true });
+          const reports = await readdir('unmerged-code-coverage-data', { withFileTypes: true });
           
           const reportDirs = reports.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);       
           for (const dir of reportDirs) {
-            await copyFile(`${{ inputs.coverage-reports }}/${dir}/coverage-final.json`, `${{ github.workspace }}/coverage/${dir}.json`)
+            await copyFile(`unmerged-code-coverage-data/${dir}/coverage-final.json`, `${{ github.workspace }}/coverage/${dir}.json`)
           }; 
           
           const reportFiles = reports.filter(dirent => dirent.isFile() && dirent.name.includes('.json')).map(dirent => dirent.name);
           for (const file of reportFiles) {
-            await copyFile(`${{ inputs.coverage-reports }}/${file}`, `${{ github.workspace }}/coverage/${file}.json`)
+            await copyFile(`unmerged-code-coverage-data/${file}`, `${{ github.workspace }}/coverage/${file}.json`)
           }; 
 
     - name: Merge coverage
@@ -72,3 +83,10 @@ runs:
       working-directory: ${{ inputs.source }}
       run: |
         nyc report -t ${{ github.workspace }}/coverage --reporter lcovonly --reporter html --report-dir ${{ inputs.output-folder }}
+
+    - name: Upload merged coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.merged-code-coverage-artifact-name }}
+        path: ./${{ inputs.output-folder }}/lcov.info
+        retention-days: 1
