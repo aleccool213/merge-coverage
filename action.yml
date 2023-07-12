@@ -32,7 +32,7 @@ runs:
     - name: Install dependencies
       shell: bash
       if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-      run: npm i -g nyc
+      run: npm i -g nyc@15.0.1
 
     - name: Collect coverage reports
       uses: actions/github-script@v6
@@ -61,4 +61,4 @@ runs:
       shell: bash
       working-directory: ${{ inputs.source }}
       run: |
-        nyc report -t ${{ github.workspace }}/coverage --reporter text --reporter json --reporter json-summary --report-dir ${{ inputs.output-folder }}
+        nyc report -t ${{ github.workspace }}/coverage --reporter lcovonly --reporter html --report-dir ${{ inputs.output-folder }}
