@@ -14,6 +14,9 @@ inputs:
   output-folder:
     description: 'Where to output merged reports'
     required: true
+  code-coverage-workspace-generates:
+    description: 'The workspace directory of the job which generates the coverage reports'
+    required: true
 outputs:
   report:
     description: 'Coverage report'
@@ -56,6 +59,12 @@ runs:
       shell: bash
       run: |
         nyc merge ${{ github.workspace }}/coverage ${{ github.workspace }}/coverage/coverage-final.json
+    
+    # Needed to make `nyc report` output proper reports when merging multiple reports together.
+    # This finds-and-replaces the current working directory with the final workspace of ./merge_code_coverage_reports.yaml.
+    # https://github.com/istanbuljs/nyc/issues/1249#issuecomment-677928933
+    - name: Replace github workspace directory inside of coverage-final.json with final sonarqube workspace
+      run: sed -i -e 's@${{ inputs.merged-code-coverage-workspace }}@${{ github.workspace }}@g' coverage/coverage-final.json
 
     - name: Output coverage report
       shell: bash
