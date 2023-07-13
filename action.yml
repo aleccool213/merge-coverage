@@ -5,21 +5,21 @@ branding:
   icon: 'git-merge'
   color: 'green'
 inputs:
-  source:
-    description: 'Path to source code'
-    required: true
   unmerged-coverage-reports-artifact-name:
-    description: 'Name of the coverage reports artifact'
+    description: 'Name of the unmerged coverage reports artifact. Should be a folder which contains sub-folders that contain coverage-file.json files.'
     required: true
+    default: 'unmerged-coverage-reports'
   output-folder:
-    description: 'Where to output merged reports'
+    description: 'Folder to output the merged coverage report to. Included in the path of the uploaded artifact. For example, ./code-coverage-data/coverage/lcov.info'
     required: true
+    default: 'code-coverage-data'
   code-coverage-workspace-generates:
-    description: 'The workspace directory of the job which generates the coverage reports'
+    description: 'The workspace directory of the job which generates the coverage reports. You can obtain this by echoing the github.workspace attribute in the job which generates the coverage reports.'
     required: true
   merged-code-coverage-artifact-name:
-    description: 'Name of the merged coverage reports artifact'
+    description: 'Name of the merged coverage reports artifact which gets uploaded.'
     required: true
+    default: 'code-coverage-data'
 outputs:
   report:
     description: 'Coverage report'
@@ -80,7 +80,6 @@ runs:
 
     - name: Output coverage report
       shell: bash
-      working-directory: ${{ inputs.source }}
       run: |
         nyc report -t ${{ github.workspace }}/coverage --reporter lcovonly --reporter html --report-dir ${{ inputs.output-folder }}
 
